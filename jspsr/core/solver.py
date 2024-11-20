@@ -9,10 +9,8 @@ from jspsr.ext import sparse_solve
 
 
 class SparseMatrixStorage:
-    """
-    Cache is used to store factorizations and block decompositions
-        So don't alter the members after they are initialized!
-    """
+    r""" Cache is used to store factorizations and block decompositions, So don't alter the members after they are initialized! """
+    
     def __init__(self, a_i, a_j, a_x, dim: int, dim_j: int = None):
         self.a_i = a_i.detach()
         self.a_j = a_j.detach()
@@ -74,9 +72,8 @@ class SparseMatrixStorage:
 
 
 class Solver(torch.autograd.Function):
-    """
-    Differentiable linear solver class
-    """
+    r""" Differentiable linear solver class """
+
     @staticmethod
     def forward(ctx, a: SparseMatrixStorage, a_x: torch.Tensor, b: torch.Tensor,
                 forward_solver, backward_solver):
@@ -100,8 +97,8 @@ class Solver(torch.autograd.Function):
 
 def solve_sparse(a_i: torch.Tensor, a_j: torch.Tensor, a_x: torch.Tensor, b: torch.Tensor,
                  solver_type: str, verbose_str: str = None):
-    """
-    Solve a sparse linear system in a differentiable manner: Ax = b
+    r"""Solve a sparse linear system in a differentiable manner: Ax = b
+
     :param a_i: COO row indices of A
     :param a_j: COO col indices of A
     :param a_x: COO values of A

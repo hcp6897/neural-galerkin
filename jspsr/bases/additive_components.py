@@ -1,7 +1,8 @@
 import math
-import sympy as sp
 import torch
 from abc import ABC, abstractmethod
+
+import sympy as sp
 
 
 class AdditiveComponent(ABC):

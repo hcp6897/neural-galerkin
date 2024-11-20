@@ -1,7 +1,6 @@
-
 def get_basis(name, **kwargs):
-    """
-    Get a basis instance given keyword arguments
+    r"""Get a basis instance given keyword arguments.
+    
     :param name: name of the basis
     :return: basis instance
     """

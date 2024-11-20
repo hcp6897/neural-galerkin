@@ -21,11 +21,11 @@ def _get_ns(n_degrees):
 
 
 class AdditiveHermite(AdditiveBasis):
-    """
-        Addition of polynomial and other elementary functions, where the coeffs of the polynomials
+    """Addition of polynomial and other elementary functions, where the coeffs of the polynomials
     lie within the Null space of boundary + hermite constraint:
         b(-1.5) = grad b (-1.5) = b(1.5) = grad b (1.5) = 0.
     """
+    
     def __init__(self, n_degrees, components, init_vals):
         assert n_degrees > 3, "Degrees <= cubic does not admit two hermite constraints!"
 
@@ -41,8 +41,8 @@ class AdditiveHermite(AdditiveBasis):
         self.n_acomp = len(components)
 
     def feature_to_coefficient(self, feat: torch.Tensor) -> torch.Tensor:
-        """
-        Convert feature that describes the basis to real coefficients of the components.
+        r"""Convert feature that describes the basis to real coefficients of the components.
+        
         :param feat: torch.Tensor (N, x) feature
         :return: torch.Tensor (N, 3*len(self.components)) coefficients (for x,y,z axis)
         """

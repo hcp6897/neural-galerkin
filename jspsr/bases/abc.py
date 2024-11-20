@@ -1,6 +1,7 @@
-import jittor as jt
 import torch
 from abc import ABC, abstractmethod
+
+import jittor as jt
 
 
 class BaseBasis(torch.nn.Module, ABC):

@@ -3,14 +3,15 @@ import weakref
 
 import torch
 import torch_scatter
+
 from jspsr.ext import marching_cubes, sparse_op
 
 
 class MarchingCubes(torch.autograd.Function):
+    r""" Differentiable implementation of sparse marching cubes. (primal version)
+    Technique is from MeshSDF.
     """
-    Differentiable implementation of sparse marching cubes. (primal version)
-        Technique is from MeshSDF.
-    """
+
     @staticmethod
     def forward(ctx, base_coords, sdf_val, bandwidth=1.0):
         tris, vert_ids, src_ids, src_weights = marching_cubes.marching_cubes_sparse(base_coords, sdf_val)
@@ -83,8 +84,8 @@ screened_multiplication = ScreenedMultiplication.apply
 
 
 def compute_normal(vertices: torch.Tensor, triangles: torch.Tensor):
-    """
-    Compute per-vertex normal by averaging triangle normals, weighted by triangle area.
+    r""" Compute per-vertex normal by averaging triangle normals, weighted by triangle area.
+
     :param vertices: (V, 3)
     :param triangles: (T, 3)
     :return: (V, 3)
@@ -102,8 +103,8 @@ def compute_normal(vertices: torch.Tensor, triangles: torch.Tensor):
 
 def torch_unique(input: torch.Tensor, sorted: bool = False, return_inverse: bool = False,
                  return_counts: bool = False, dim: int = None):
-    """
-    If used with dim, then torch.unique will return a flattened tensor. This fixes that behaviour.
+    r"""If used with dim, then torch.unique will return a flattened tensor. This fixes that behaviour.
+    
     :param input: (Tensor) – the input tensor
     :param sorted: (bool) – Whether to sort the unique elements in ascending order before returning as output.
     :param return_inverse: (bool) – Whether to also return the indices for where elements in the original input

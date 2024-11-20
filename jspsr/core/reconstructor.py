@@ -4,6 +4,7 @@ import jittor as jt
 import torch
 import torch_scatter
 import numpy as np
+
 from jspsr.core.hashtree import HashTree, VoxelStatus
 from jspsr.bases.abc import BaseBasis
 from jspsr.core.ops import screened_multiplication, marching_cubes_op, marching_cubes, torch_unique
@@ -12,9 +13,8 @@ from jspsr.core.solver import solve_sparse
 
 
 class ScreeningData:
-    """
-    Sparse matrix representation (Num-pts x Num-vx)
-    """
+    r""" Sparse matrix representation (Num-pts x Num-vx) """
+
     def __init__(self, pts_ids, vx_ids, values, nb_sizes):
         self.pts_ids = pts_ids
         self.vx_ids = vx_ids
@@ -24,8 +24,8 @@ class ScreeningData:
 
 class Reconstructor:
     def __init__(self, hash_tree: HashTree, basis: BaseBasis, feat: dict = None):
-        """
-        Screened Poisson reconstructor class.
+        r""" Screened Poisson reconstructor class.
+
         :param hash_tree: The tree containing the octree structure as well as input points
         :param basis: basis function to use
         :param feat: dict that maps from integer depth to torch features, used only when basis needs features.
@@ -80,14 +80,15 @@ class Reconstructor:
                         screen_alpha: Union[float, torch.Tensor] = 0.0, screen_xyz: torch.Tensor = None,
                         screen_delta: Union[float, torch.Tensor] = 0.1,
                         solver: str = "pcg", verbose: bool = True):
-        """
-            Build and solve the linear system L alpha = d, using our coarse-to-fine solver.
+        r""" Build and solve the linear system L alpha = d, using our coarse-to-fine solver.
         Note that the full V-cycle is not supported in this repo. Normal is however not smoothed
         because empirically we've found no difference.
-            The energy function defined in our paper is solver within a truncated domain, with
+
+        The energy function defined in our paper is solver within a truncated domain, with
         explicit dirichlet constraints that the boundary evaluates to 0. We choose not to eliminate
         such constraints because that will introduce many heterogeneous integral computations on
         the boundary.
+
         :param start_depth: int, the coarsest level for the solver
         :param end_depth: int, the finest level for the solver
         :param normal_data: dictionary that maps from depth to splatted normal data (x, 3)
@@ -196,8 +197,8 @@ class Reconstructor:
 
     def evaluate_raw_chi(self, xyz: torch.Tensor, compute_mask: bool = False,
                          compute_grad: bool = False, depths: list = None):
-        """
-        Evaluate the chi value at (x,y,z)
+        r""" Evaluate the chi value at (x,y,z)
+
         :param depths: visualize only the depth in the list, default is None
         :param compute_grad: whether to compute gradient of the field
         :param xyz: torch.Tensor (N x 3). metric-space positions
@@ -255,8 +256,8 @@ class Reconstructor:
         return torch.cat(sdf_val_chunks) - mean_chi
 
     def extract_mesh(self, base_coords: torch.Tensor, chi_field: torch.Tensor, chi_depth: int, build_o3d_mesh: bool = True):
-        """
-        Extract mesh at a specific depth, given densely-evaluated implicit function values.
+        r"""Extract mesh at a specific depth, given densely-evaluated implicit function values.
+
         :param base_coords: coordinates of the evaluation point
         :param chi_field: sampled implicit function values
         :param chi_depth: int, depth of the mesh extraction
@@ -295,9 +296,9 @@ class Reconstructor:
 
     def extract_multiscale_mesh(self, n_upsample: int = 1, max_depth: int = 100, expand: int = 0, trim: bool = False,
                                 build_o3d_mesh: bool = True, max_points: int = -1):
-        """
-        https://www.cs.rice.edu/~jwarren/papers/dmc.pdf
+        r""" https://www.cs.rice.edu/~jwarren/papers/dmc.pdf
             (Possible extensions: Use hermite data to compute feature locations & Manifold dual marching cubes)
+
         :param n_upsample: samples within each primal grid.
         :param max_depth: maximum depth to extract
         :param expand: size of expansion for the tree, set to 3 to guarantee no information is lost.

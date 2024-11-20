@@ -1,17 +1,16 @@
 import os
 from pathlib import Path
-
 import tqdm
 import numpy as np
 import torch_scatter
 from typing import List, Union, Tuple, Dict
-from jspsr.bases.additive_components import *
-from jspsr.bases.abc import BaseBasis
-from jspsr.ext import integration
-
 import itertools
 import functools
 from multiprocessing import Pool
+
+from jspsr.bases.additive_components import *
+from jspsr.bases.abc import BaseBasis
+from jspsr.ext import integration
 
 
 def _integrate_ff(multiple_dx, func_i, func_j, x):
@@ -135,11 +134,11 @@ class EvalDerivFunc(torch.autograd.Function):
 
 
 class AdditiveBasis(BaseBasis):
-    """
-    B(x) = sum m_u q_u
-    """
+    r""" B(x) = sum m_u q_u """
+
     def __init__(self, components: List[Union[str, AdditiveComponent]], init_vals: List[float]):
-        """
+        r"""
+
         :param components: list of AdditiveComponent
         :param init_vals: list of initial coefficients of these components
         """
@@ -170,8 +169,8 @@ class AdditiveBasis(BaseBasis):
         self.f_integral = self._convert_parameter(f_integral_dict, "f_integral")
 
     def _get_integrals(self, n_multiples: int = 5) -> Tuple[Dict, Dict]:
-        """
-        Precompute the integrals mentioned in Appendix B.
+        r"""Precompute the integrals mentioned in Appendix B.
+
         :param n_multiples, int is
         """
         ff_integral_dict = {}
@@ -249,9 +248,7 @@ class AdditiveBasis(BaseBasis):
         return ff_integral_dict, f_integral_dict
 
     def _convert_parameter(self, val, name):
-        """
-        Convert value into class torch parameters, so that device could be managed automatically.
-        """
+        r"""Convert value into class torch parameters, so that device could be managed automatically."""
         if isinstance(val, list) or isinstance(val, np.ndarray):
             if isinstance(val[0], float) or isinstance(val[0], np.ndarray):
                 new_param = torch.nn.Parameter(torch.tensor(val, dtype=torch.float), requires_grad=False)
@@ -265,17 +262,17 @@ class AdditiveBasis(BaseBasis):
             raise NotImplementedError
 
     def feature_to_coefficient(self, feat: torch.Tensor) -> torch.Tensor:
-        """
-        Convert feature that describes the basis to real coefficients of the components.
+        r"""Convert feature that describes the basis to real coefficients of the components.
+
         :param feat: torch.Tensor (N, x) feature
         :return: torch.Tensor (N, 3*len(self.components)) coefficients (for x,y,z axis)
         """
         return feat
 
     def initialize_feature_value(self, feat: torch.Tensor) -> None:
-        """
-        Initialize the input features, so that the basis behaves like Bezier.
-            This would give a good start for basis optimization.
+        r"""Initialize the input features, so that the basis behaves like Bezier.
+        This would give a good start for basis optimization.
+        
         :param feat: torch.Tensor (M, K), where K = self.get_feature_size()
         :return: None
         """
@@ -284,14 +281,14 @@ class AdditiveBasis(BaseBasis):
             feat[:, ci * 3: ci * 3 + 3] = self.init_vals[ci]
 
     def get_feature_size(self) -> int:
-        """
-        Get the feature channels needed (i.e. the dimension of $m_k^s$)
+        r"""Get the feature channels needed (i.e. the dimension of $m_k^s$)
+
         :return: int. feature_size
         """
         return len(self.components) * 3
 
     def evaluate(self, feat: torch.Tensor, xyz: torch.Tensor, feat_ids: torch.Tensor) -> torch.Tensor:
-        """
+        r"""
         :param feat: torch.Tensor (M, K),     the basis feature, i.e. $m_k^s$.
         :param xyz:  torch.Tensor (N, 3),     local coordinates w.r.t. the voxel's center.
         :param feat_ids: torch.Tensor (N, ),  the index (0~M-1) into feat.
@@ -320,8 +317,8 @@ class AdditiveBasis(BaseBasis):
     def integrate_deriv_deriv_product(self, source_feat: torch.Tensor, target_feat: torch.Tensor,
                                       rel_pos: torch.Tensor, source_stride: int, target_stride: int,
                                       source_ids: torch.Tensor, target_ids: torch.Tensor) -> torch.Tensor:
-        """
-        Compute $integrate_Omega nabla B_source^T nabla B_target$, as appeared in LHS.
+        r"""Compute $integrate_Omega nabla B_source^T nabla B_target$, as appeared in LHS.
+
         :param source_feat: torch.Tensor (M_source, K), the source basis feature
         :param target_feat: torch.Tensor (M_target, K), the target basis feature
         :param rel_pos:     torch.Tensor (N, 3)
@@ -363,8 +360,8 @@ class AdditiveBasis(BaseBasis):
     def integrate_const_deriv_product(self, data: torch.Tensor, target_feat: torch.Tensor,
                                       rel_pos: torch.Tensor, data_stride: int, target_stride: int,
                                       target_ids: torch.Tensor) -> torch.Tensor:
-        """
-        Compute $integrate_Omega nabla B_target^T data$, as appeared in RHS.
+        r"""Compute $integrate_Omega nabla B_target^T data$, as appeared in RHS.
+        
         :param data:        torch.Tensor (N, K), the data (N) to be integrated
         :param target_feat: torch.Tensor (M_target, K), the target basis feature
         :param rel_pos:     torch.Tensor (N, 3)
