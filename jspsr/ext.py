@@ -34,8 +34,8 @@ class CuckooHashTable:
 
     @classmethod
     def _sphash(cls, coords: torch.Tensor, offsets=None) -> torch.Tensor:     # Int64
-        """
-        Compute the hash value of coords + offsets.
+        r"""Compute the hash value of coords + offsets.
+        
         :param coords: (N, 3)
         :param offsets: (K, 3) offsets to be added to coordinates
         :return: (N, K) if offsets is provided, otherwise (N,)

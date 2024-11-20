@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+
 from pykdtree.kdtree import KDTree
 
 # Worst-case metric, used if no prediction is generated.
