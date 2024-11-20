@@ -16,6 +16,7 @@ class CuckooHashTable:
     Cuckoo Hash Table for fast positional queries.
     Code is adapted from https://github.com/mit-han-lab/torchsparse
     """
+    
     def __init__(self, data: torch.Tensor = None, hashed_data: torch.Tensor = None, enlarged: bool = False):
         """
         :param data: (N, K), K will be used as the dimension
