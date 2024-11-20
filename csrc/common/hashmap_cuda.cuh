@@ -33,7 +33,8 @@ inline __device__ int do_1st_hash(const uint64_t val, const int num_buckets) {
 
 inline __device__ int do_2nd_hash(const uint64_t val,
                                   const FuncConfig *const hash_func_configs,
-                                  const int func_idx, const int size) {
+                                  const int func_idx, 
+                                  const int size) {
   FuncConfig fc = hash_func_configs[func_idx];
   return ((val ^ fc.rv) >> fc.ss) % size;  // XOR function as 2nd-level hashing.
 }
@@ -64,6 +65,7 @@ struct HashLookupParam {
 class HashLookupData {
     HashLookupParam _param;
     friend class CuckooHashTableCuda_Multi;
+
 public:
     int inserted_size;
     torch::Tensor keys;
@@ -87,7 +89,7 @@ public:
 };
 
 class CuckooHashTableCuda_Multi {
- private:
+private:
   const int _size;
   const int _evict_bound;
   const int _num_funcs;
@@ -142,6 +144,7 @@ class CuckooHashTableCuda_Multi {
     cudaMemcpy(_d_hash_func_configs, _hash_func_configs,
                _num_funcs * sizeof(FuncConfig), cudaMemcpyHostToDevice);
   };
+  
   ~CuckooHashTableCuda_Multi() {
     if (_hash_func_configs != NULL) delete[] _hash_func_configs;
 

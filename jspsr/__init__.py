@@ -7,8 +7,8 @@ __version_info__ = (1, 0, 0)
 
 def reconstruct(xyz: jt.Var, normal: jt.Var, voxel_size: float, depth: int = 4,
                 min_density: float = 32.0, screen_alpha: float = 4.0) -> Tuple[jt.Var, jt.Var]:
-    """
-    A utility function, that reconstructs a triangle mesh given input points and normals.
+    r"""A utility function, that reconstructs a triangle mesh given input points and normals.
+    
     :param xyz: (N, 3) float32 cuda tensor
     :param normal: (N, 3) float32 cuda tensor
     :param voxel_size: float, size of the voxel at the finest level
